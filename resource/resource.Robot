@@ -1,0 +1,37 @@
+*** Settings ***
+Library         SeleniumLibrary
+
+*** Keywords ***
+#Setup e Teardown
+Abrir chrome
+    Open Browser    about:blank  ${BROWSER}
+    Sleep    2s
+
+Fechar chrome
+    Close Browser
+
+#Teste passo-a-passo
+Dado que acesso a página de login
+    Go To                           ${URL}
+    Maximize Browser Window   
+    Sleep                           3s
+    Page Should Contain Element     xpath://h2[('Formulário de Login')]
+
+Quando submeto meu "${LOGIN}"
+    Input Text              id=userId   ${LOGIN}
+
+E submeto minha "${PASSWORD}"
+    Input Password          id=passId   ${PASSWORD}
+
+Então devo ser direcionado para área logada
+    Click Element           xpath=//i[contains(@class,'fa fa-2x fa-sign-in')]
+    Page Should Contain Element     xpath=//div[contains(@class,'flash success')]
+    Sleep    5s
+
+Então devo receber um alerta: "O usuário informado não está cadastrado!"
+    Click Element           xpath=//i[contains(@class,'fa fa-2x fa-sign-in')]
+    Page Should Contain Element     xpath=//div[contains(@class,"flash error")]
+
+Então devo receber um alerta: "Senha é invalida!"
+    Click Element           xpath=//i[contains(@class,'fa fa-2x fa-sign-in')]
+    Page Should Contain Element     xpath=//div[contains(@class,'flash error')]
